@@ -12,6 +12,7 @@ require 'uri'
 require 'stringio'
 
 module Icalendar
+  
   def Icalendar.parse(src, single = false)
     cals = Icalendar::Parser.new(src).parse
 
@@ -153,6 +154,7 @@ module Icalendar
 
           # Lookup the property name to see if we have a string to
           # object parser for this property type.
+          orig_value = value
           if @parsers.has_key?(name)
             value = @parsers[name].call(name, params, value)
           end
@@ -223,7 +225,7 @@ module Icalendar
         pname = $1
         pvals = $3
 
-        # If their isn't an '=' sign then we need to do some custom
+        # If there isn't an '=' sign then we need to do some custom
         # business.  Defaults to 'type'
         if $2 == ""
           pvals = $1
@@ -298,6 +300,11 @@ module Icalendar
       # GEO
       m = self.method(:parse_geo)
       @parsers["GEO"] = m
+      
+      #RECUR
+      m = self.method(:parse_recur)
+      @parsers["RRULE"] = m
+      @parsers["EXRULE"] = m
 
     end
 
@@ -317,11 +324,25 @@ module Icalendar
     # NOTE: invalid dates & times will be returned as strings...
     def parse_datetime(name, params, value)
       begin
-        DateTime.parse(value)
+        if params["VALUE"] && params["VALUE"].first == "DATE"
+          result = Date.parse(value)
+        else
+          result = DateTime.parse(value)
+          if /Z$/ =~ value
+            timezone = "UTC"
+          else
+            timezone = params["TZID"].first if params["TZID"]
+          end
+          result.icalendar_tzid = timezone
+        end
+        result
       rescue Exception
         value
       end
-
+    end
+    
+    def parse_recur(name, params, value)
+      ::Icalendar::RRule.new(name, params, value, self)
     end
 
     # Durations

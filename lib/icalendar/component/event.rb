@@ -27,6 +27,9 @@ module Icalendar
     # Complete description of the calendar component
     ical_property :description
 
+    # Specifies the timezone for the event
+    attr_accessor :tzid
+    
     # Specifies date-time when calendar component begins
     ical_property :dtstart, :start
 
@@ -117,7 +120,10 @@ module Icalendar
 
       a
     end
-
+    
+    def occurrences_starting(time)
+      recurrence_rules.first.occurrences_of_event_starting(self, time)
+    end
 
   end
 end
