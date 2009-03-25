@@ -1,12 +1,11 @@
 --- !ruby/object:Gem::Specification 
 name: icalendar
 version: !ruby/object:Gem::Version 
-  version: 1.0.2.1
+  version: 1.1.0.2
 platform: ""
 authors: 
 - Jeff Rose
 autorequire: icalendar
-bindir: bin
 cert_chain: 
 date: 2007-11-24 00:00:00 -06:00
 default_executable: 
@@ -48,11 +47,13 @@ files:
 - lib/icalendar/component/timezone.rb
 - lib/icalendar/component/todo.rb
 - lib/icalendar/conversions.rb
+- lib/icalendar/tzinfo.rb
 - lib/icalendar/parameter.rb
 - lib/icalendar/component.rb
 - lib/icalendar/helpers.rb
 - lib/icalendar/parser.rb
 - lib/icalendar/calendar.rb
+- lib/icalendar/rrule.rb
 - lib/icalendar/base.rb
 - lib/hash_attrs.rb
 - lib/icalendar.rb
@@ -80,7 +81,6 @@ rdoc_options:
 - --main
 - README
 require_paths: 
-- bin
 - lib
 required_ruby_version: !ruby/object:Gem::Requirement 
   requirements: 
